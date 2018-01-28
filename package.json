@@ -1,0 +1,26 @@
+{
+  "name": "surgereactor",
+  "version": "1.0.0",
+  "description": "uber backend microservices",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.16.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/loryzhang/SurgeReactor.git"
+  },
+  "keywords": [
+    "surgereactor"
+  ],
+  "author": "loryzhang",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/loryzhang/SurgeReactor/issues"
+  },
+  "homepage": "https://github.com/loryzhang/SurgeReactor#readme"
+}
