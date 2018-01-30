@@ -38,11 +38,12 @@ module.exports = {
     sqs.sendMessage(params, (err, data) => {
       if (err) {
         console.log('Error', err);
-        res.status(401).send(err);
+        res.status(401);
+        res.end();
       } else {
         console.log('Success', data.MessageId);
         res.status(200);
-        res.json(data);
+        res.end();
       }
     });
   },
@@ -67,11 +68,12 @@ module.exports = {
     sqs.sendMessage(params, (err, data) => {
       if (err) {
         console.log('Error', err);
-        res.status(401).send(err);
+        res.status(401);
+        res.end();
       } else {
         console.log('Success', data.MessageId);
         res.status(200);
-        res.json(data);
+        res.end();
       }
     });
   },

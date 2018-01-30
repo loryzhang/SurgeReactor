@@ -19,9 +19,9 @@ module.exports = {
     res.render('user', { message1: id, message2: name });
   },
   getSDlogs: (req, res) => {
-
+    res.end();
   },
   getVRlogs: (req, res) => {
-
+    res.end();
   },
 };
