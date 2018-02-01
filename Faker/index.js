@@ -8,9 +8,9 @@ AWS.config.update({
   endpoint: 'http://localhost:8000',
 });
 
+const tableName = 'supply';
 const dynamo = new AWS.DynamoDB();
 const documentClient = new AWS.DynamoDB.DocumentClient();
-const tableName = 'supply';
 const params = {
   TableName: tableName,
   KeySchema: [
@@ -34,10 +34,8 @@ dynamo.createTable(params, (tableErr, tableData) => {
   }
 });
 
-
 module.exports = {
   generateDataFromDriver: (req, res) => {
-    const tableName = 'supply';
     const driverid = faker.random.uuid();
     const timestamp = faker.date.between('2017-11-01', '2018-01-31');
     console.log (`${driverid}${timestamp}`);
@@ -53,10 +51,8 @@ module.exports = {
     documentClient.put(message, (err, data) => {
       if (err) {
         console.error('Error JSON:', JSON.stringify(err, null, 2));
-        // res.send(err);
       } else {
         console.log('Added item successfully!', data);
-        // res.json(data);
       }
     });
     const query = {
@@ -75,35 +71,6 @@ module.exports = {
         res.json(data);
       }
     });
-    // const batchRequest = {
-    //   RequestItems: {
-    //     'supply' : [],
-    //   },
-    // };
-    // for (let i = 0; i < 25; i += 1) {
-    //   const driver_id = faker.random.uuid();
-    //   const time_stamp = faker.date.between('2017-11-01', '2018-01-31');
-    //   console.log ('driver_id: ', driver_id);
-    //   console.log ('time_stamp:', time_stamp);
-    //   batchRequest.RequestItems.supply.push({
-    //     PutRequest: {
-    //       Item: {
-    //         'hash_key': { S: `${driver_id}${time_stamp}` },
-    //         'driver_id': { S: driver_id },
-    //         'time_stamp': { S: time_stamp }, 
-    //       },
-    //     },
-    //   });
-    // }
-    // dynamo.batchWriteItem(batchRequest, (err, data) => {
-    //   if (err) {
-    //     console.log (err);
-    //     res.end();
-    //   } else {
-    //     console.log (data);
-    //     res.end();
-    //   }
-    // });
   },
   generateDataFromSurge: () => {
 
