@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const redis = require('../redis');
 const awsSQS = require('../awsSQS');
+const fakeData = require('../Faker');
 
 router.get('/', (req, res) => {
   res.render('index', { message1: 'Hey', message2: 'Hello there!' });
@@ -14,5 +15,6 @@ router.post('/requests', awsSQS.requests);
 router.get('/supplydemandlogs/:time', redis.getSDlogs);
 router.get('/viewtorequestlogs/:time', redis.getVRlogs);
 router.post('/addtoredis', redis.adduser);
+router.get('/fakedata', fakeData.generateDataFromDriver);
 
 module.exports = router;
