@@ -1,0 +1,42 @@
+CREATE TABLE if not exists supply (
+ id serial PRIMARY KEY,
+ driver_id VARCHAR (50) NOT NULL,
+ time_stamp timestamp with time zone NOT NULL
+);
+
+CREATE TABLE if not exists reducesupply (
+ id serial PRIMARY KEY,
+ request_id VARCHAR (50) NOT NULL,
+ driver_id VARCHAR (50) NOT NULL,
+ time_stamp timestamp with time zone NOT NULL
+);
+
+CREATE TABLE if not exists demand (
+ id serial PRIMARY KEY,
+ surge_id VARCHAR (50) NOT NULL,
+ rider_id VARCHAR (50) NOT NULL,
+ time_stamp timestamp with time zone NOT NULL
+);
+
+CREATE TABLE if not exists reducedemand (
+ id serial PRIMARY KEY,
+ request_id VARCHAR (50) NOT NULL,
+ rider_id VARCHAR (50) NOT NULL,
+ time_stamp timestamp with time zone NOT NULL
+); 
+
+CREATE TABLE if not exists views (
+ id serial PRIMARY KEY,
+ surge_id VARCHAR (50) NOT NULL,
+ is_surged BOOLEAN,
+ surge_ratio INTEGER, 
+ time_stamp timestamp with time zone NOT NULL
+);
+
+CREATE TABLE if not exists requests (
+  id serial PRIMARY KEY,
+  request_id VARCHAR (50) NOT NULL,
+  is_surged BOOLEAN,
+  surge_ratio INTEGER,
+  time_stamp timestamp with time zone NOT NULL
+);
