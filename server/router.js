@@ -16,5 +16,6 @@ router.get('/supplydemandlogs/:time', redis.getSDlogs);
 router.get('/viewtorequestlogs/:time', redis.getVRlogs);
 router.post('/addtoredis', redis.adduser);
 router.get('/fake', postgreSQL.insertData);
+router.get('/testquery', postgreSQL.queryData);
 
 module.exports = router;

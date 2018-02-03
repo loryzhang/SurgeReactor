@@ -1,0 +1,18 @@
+write:
+16 ms for 2 queries
+287 ms for 6,000 queries
+2697 ms for 60,000 queries
+
+29273 ms for 600,000 queries
+10044 ms for 600,000 queries
+
+32074 ms for 1,800,000 queries
+
+
+query:
+by timestamp using where 412 ms
+
+initdb /usr/local/var/postgres10.1 -E utf8 
+The data directory was initial│lrwxr-xr-x   1 loryzhang  admin    21B Nov  6 16:52 libpgtypes.dylib -> lib
+ized by PostgreSQL version 9.6, which is not compatible with this version 1│pgtypes.3.10.dylib
+0.1.    
