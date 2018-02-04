@@ -11,8 +11,4 @@ write:
 
 query:
 by timestamp using where 412 ms
-
-initdb /usr/local/var/postgres10.1 -E utf8 
-The data directory was initial│lrwxr-xr-x   1 loryzhang  admin    21B Nov  6 16:52 libpgtypes.dylib -> lib
-ized by PostgreSQL version 9.6, which is not compatible with this version 1│pgtypes.3.10.dylib
-0.1.    
+after create new index by time-stamp query time less than 1 ms after cache
