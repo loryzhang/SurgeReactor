@@ -32,7 +32,7 @@ module.exports = (req, res) => {
     MessageDeduplicationId: request_id,
     MessageGroupId: time_stamp,
     MessageBody: 'add a request',
-    QueueUrl: process.env.requests,
+    QueueUrl: `${process.env.sqs}requests.fifo`,
   };
   sqs.sendMessage(params, (err, data) => {
     if (err) {

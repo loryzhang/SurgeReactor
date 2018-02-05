@@ -9,7 +9,7 @@ AWS.config.update({
 const sqs = new AWS.SQS();
 
 module.exports = (req, res) => {
-  const { rider_id, time_stamp, is_surged, surge_ratio } = req.body;
+  const { rider_id, time_stamp, is_surged, surge_ratio, surge_id} = req.body;
   const params = {
     MessageAttributes: {
       rider_id: {
@@ -19,6 +19,10 @@ module.exports = (req, res) => {
       time_stamp: {
         DataType: 'String',
         StringValue: time_stamp,
+      },
+      surge_id: {
+        DataType: 'String',
+        StringValue: surge_id,
       },
       is_surged: {
         DataType: 'String',
@@ -32,7 +36,7 @@ module.exports = (req, res) => {
     MessageDeduplicationId: time_stamp,
     MessageGroupId: time_stamp,
     MessageBody: 'add a view',
-    QueueUrl: process.env.views,
+    QueueUrl: `${process.env.sqs}views.fifo`,
   };
   sqs.sendMessage(params, (err, data) => {
     if (err) {
