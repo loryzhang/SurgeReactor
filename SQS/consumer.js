@@ -28,7 +28,6 @@ const addDemand = Consumer.create({
   },
 });
 
-
 addDemand.on('error', (err) => {
   console.log(err.message);
 });

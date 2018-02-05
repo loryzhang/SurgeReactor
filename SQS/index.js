@@ -29,15 +29,26 @@ module.exports = {
       }
     });
   },
-  addDemand: (req, res) => {
-    const { rider_id, time_stamp } = req.body;
-    const params = {
+  addView: (req, res) => {
+    const { rider_id, time_stamp, is_surged, surge_ratio, surge_id } = req.body;
+    const paramsView = {
+      MessageDeduplicationId: time_stamp,
+      MessageGroupId: time_stamp,
+      MessageBody: JSON.stringify({
+        surge_id,
+        time_stamp,
+        is_surged,
+        surge_ratio,
+      }),
+      QueueUrl: `${process.env.sqs}views.fifo`,
+    };
+    const paramsDemand = {
       MessageDeduplicationId: time_stamp,
       MessageGroupId: rider_id,
       MessageBody: JSON.stringify({ rider_id, time_stamp }),
       QueueUrl: `${process.env.sqs}addDemand.fifo`,
     };
-    sqs.sendMessage(params, (err, data) => {
+    sqs.sendMessage(paramsView, (err, data) => {
       if (err) {
         console.log('Error', err);
         res.status(401);
@@ -48,22 +59,7 @@ module.exports = {
         res.end();
       }
     });
-  },
-  addView: (req, res) => {
-    const { rider_id, time_stamp, is_surged, surge_ratio, surge_id } = req.body;
-    const params = {
-      MessageDeduplicationId: time_stamp,
-      MessageGroupId: time_stamp,
-      MessageBody: JSON.stringify({
-        rider_id,
-        time_stamp,
-        is_surged,
-        surge_ratio,
-        surge_id,
-      }),
-      QueueUrl: `${process.env.sqs}views.fifo`,
-    };
-    sqs.sendMessage(params, (err, data) => {
+    sqs.sendMessage(paramsDemand, (err, data) => {
       if (err) {
         console.log('Error', err);
         res.status(401);

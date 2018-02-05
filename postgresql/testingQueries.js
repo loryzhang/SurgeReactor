@@ -1,8 +1,9 @@
 const pool = require('./pool');
+const generateData = require('./generateData');
 
 module.exports = {
-  insertSupply: (msgs) => {
-    const data = `insert into supply (driver_id, time_stamp)${msgs.join(',')};`;
+  insertData: (req, res) => {
+    const data = generateData();
     const t = process.hrtime();
     pool.connect()
       .then((client) => {
@@ -10,62 +11,64 @@ module.exports = {
           .then((result) => {
             client.release();
             const diff = process.hrtime(t);
-            console.log (`10 insertion to supply table cost ${diff[0]} second, ${diff[1]} nanoseconds`);
+            console.log (`cost ${diff[0]} second, ${diff[1]} nanoseconds`);
+            res.end();
           })
           .catch((e) => {
             client.release();
             console.log(e);
+            res.end();
           });
       });
   },
-  insertDemand: (msgs) => {
-    const data = `insert into demand (rider_id, time_stamp)${msgs.join(',')};`;
+  queryData: (req, res) => {
+    const query = 'select count(*) from supply where time_stamp between \'2017-12-19 00:00:00\' and \'2017-12-19 00:15:00\'';
     const t = process.hrtime();
     pool.connect()
       .then((client) => {
-        return client.query(data)
+        return client.query(query)
           .then((result) => {
             client.release();
             const diff = process.hrtime(t);
-            console.log (`10 insertion to demand table cost ${diff[0]} second, ${diff[1]} nanoseconds`);
+            console.log (`cost ${diff[0]} second, ${diff[1]} nanoseconds`);
+            res.send(result);
           })
           .catch((e) => {
             client.release();
             console.log(e);
+            res.end();
           });
       });
   },
-  insertView: (msgs) => {
-    const data = `insert into views (surge_id, time_stamp, is_surged, surge_ratio)${msgs.join(',')};`;
-    const t = process.hrtime();
+  addSupplyData: (req, res) => {
+    const query = 'select * from supply where time_stamp between \'2017-12-19 00:00:00\' and \'2017-12-19 00:15:00\'';
     pool.connect()
       .then((client) => {
-        return client.query(data)
+        return client.query(query)
           .then((result) => {
             client.release();
-            const diff = process.hrtime(t);
-            console.log (`10 insertion to views table cost ${diff[0]} second, ${diff[1]} nanoseconds`);
+            res.send(result);
           })
           .catch((e) => {
             client.release();
             console.log(e);
+            res.end();
           });
       });
   },
-  insertRequest: (msgs) => {
-    const data = `insert into requests (request_id, time_stamp, is_surged, surge_ratio)${msgs.join(',')};`;
-    const t = process.hrtime();
+  reduceSupplyData: (req, res) => {
+    const query = 'select * from reducesupply where time_stamp between \'2017-12-19 00:00:00\' and \'2017-12-19 00:15:00\'';
     pool.connect()
       .then((client) => {
-        return client.query(data)
+        return client.query(query)
           .then((result) => {
             client.release();
-            const diff = process.hrtime(t);
-            console.log (`10 insertion to request table cost ${diff[0]} second, ${diff[1]} nanoseconds`);
+            res.send(result);
           })
           .catch((e) => {
             client.release();
             console.log(e);
+            res.end();
           });
       });
   },
