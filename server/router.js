@@ -6,12 +6,10 @@ const postgreSQL = require('../postgresql');
 router.get('/', (req, res) => {
   res.render('index', { message1: 'Hey', message2: 'Hello there!' });
 });
-router.post('/driver/enqueue', SQS.driver.enqueue);
-router.post('/driver/dequeue', SQS.driver.dequeue);
-router.post('/rider/enqueue', SQS.rider.enqueue);
-router.post('/rider/dequeue', SQS.rider.dequeue);
-router.post('/prices', SQS.views);
-router.post('/requests', SQS.requests);
+router.post('/driver/enqueue', SQS.addSupply);
+// router.post('/rider/enqueue', SQS.addDemand);
+router.post('/prices', SQS.addview);
+router.post('/requests', SQS.addrequest);
 router.get('/supplydemandlogs/:time', redis.getSDlogs);
 router.get('/viewtorequestlogs/:time', redis.getVRlogs);
 router.post('/addtoredis', redis.adduser);

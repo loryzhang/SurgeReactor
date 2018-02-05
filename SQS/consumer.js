@@ -1,4 +1,5 @@
 const Consumer = require('sqs-consumer');
+const db = require('../postgresql');
 
 const addSupply = Consumer.create({
   queueUrl: `${process.env.sqs}addSupply.fifo`,
@@ -6,10 +7,15 @@ const addSupply = Consumer.create({
   batchSize: 10,
   handleMessage: (message, done) => {
     const msgBody = JSON.parse(message.Body);
-    console.log(msgBody);
+    db.insertSupply(msgBody);
     return done();
   },
 });
+
+addSupply.on('error', (err) => {
+  console.log(err.message);
+});
+addSupply.start();
 
 const addDemand = Consumer.create({
   queueUrl: `${process.env.sqs}addDemand.fifo`,
@@ -17,54 +23,53 @@ const addDemand = Consumer.create({
   batchSize: 10,
   handleMessage: (message, done) => {
     const msgBody = JSON.parse(message.Body);
-    console.log(msgBody);
+    db.insertDemand(msgBody);
     return done();
   },
 });
-const reduceSupply = Consumer.create({
-  queueUrl: `${process.env.sqs}reduceSupply.fifo`,
-  region: 'us-west-2',
-  batchSize: 10,
-  handleMessage: (message, done) => {
-    const msgBody = JSON.parse(message.Body);
-    console.log(msgBody);
-    return done();
-  },
+
+
+addDemand.on('error', (err) => {
+  console.log(err.message);
 });
-const reduceDemand = Consumer.create({
-  queueUrl: `${process.env.sqs}reduceDemand.fifo`,
-  region: 'us-west-2',
-  batchSize: 10,
-  handleMessage: (message, done) => {
-    const msgBody = JSON.parse(message.Body);
-    console.log(msgBody);
-    return done();
-  },
-});
-const addViews = Consumer.create({
+addDemand.start();
+
+const addView = Consumer.create({
   queueUrl: `${process.env.sqs}views.fifo`,
   region: 'us-west-2',
   batchSize: 10,
   handleMessage: (message, done) => {
     const msgBody = JSON.parse(message.Body);
-    console.log(msgBody);
+    db.insertView(msgBody);
     return done();
   },
 });
-const addRequests = Consumer.create({
+
+addView.on('error', (err) => {
+  console.log(err.message);
+});
+addView.start();
+
+const addRequest = Consumer.create({
   queueUrl: `${process.env.sqs}requests.fifo`,
   region: 'us-west-2',
   batchSize: 10,
   handleMessage: (message, done) => {
     const msgBody = JSON.parse(message.Body);
-    console.log(msgBody);
+    db.insertRequest(msgBody);
     return done();
   },
 });
 
-reduceSupply.on('error', (err) => {
+addRequest.on('error', (err) => {
   console.log(err.message);
 });
+addRequest.start();
 
-reduceSupply.start();
-module.exports = reduceDemand;
+module.exports = {
+  addSupply,
+  addDemand,
+  addView,
+  addRequest,
+};
+
