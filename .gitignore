@@ -2,3 +2,4 @@ node_modules
 requests.csv
 views.csv
 supply.csv
+newrelic_agent.log
