@@ -5,15 +5,15 @@ module.exports = () => {
   const views = [];
   const requests = [];
 
-  for (let i = 0; i < 600000; i += 1) {
+  for (let i = 0; i < 1000; i += 1) {
     const requestid = faker.random.uuid();
     const driverid = faker.random.uuid();
     const surgeid = faker.random.uuid();
     const issurged = faker.random.boolean();
     const surgeratio = faker.random.number(9);
-    const timestamp1 = faker.date.between('2017-11-01', '2018-02-05');
-    const timestamp2 = faker.date.between('2017-11-01', '2018-02-05');
-    const timestamp3 = faker.date.between('2017-11-01', '2018-02-05');
+    const timestamp1 = faker.date.between('2018-02-05', '2018-02-06');
+    const timestamp2 = faker.date.between('2018-02-05', '2018-02-06');
+    const timestamp3 = faker.date.between('2017-02-05', '2018-02-06');
     supply.push(` ('${driverid}', '${JSON.parse(JSON.stringify(timestamp3))}')`);
     views.push(` ('${surgeid}', '${JSON.parse(JSON.stringify(timestamp1))}', ${issurged}, ${surgeratio})`);
     requests.push(` ('${requestid}', '${JSON.parse(JSON.stringify(timestamp2))}', '${issurged}', '${surgeratio}')`);
