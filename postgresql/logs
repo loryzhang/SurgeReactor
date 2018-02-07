@@ -1,0 +1,14 @@
+write:
+16 ms for 2 queries
+287 ms for 6,000 queries
+2697 ms for 60,000 queries
+
+29273 ms for 600,000 queries
+10044 ms for 600,000 queries
+
+32074 ms for 1,800,000 queries
+
+
+query:
+by timestamp using where 412 ms
+after create new index by time-stamp query time less than 1 ms after cache
