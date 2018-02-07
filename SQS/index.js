@@ -17,20 +17,28 @@ module.exports = {
       MessageBody: JSON.stringify({ driver_id, time_stamp }),
       QueueUrl: `${process.env.sqs}addSupply.fifo`,
     };
+    const t = process.hrtime();
     sqs.sendMessage(params, (err, data) => {
       if (err) {
         console.log('Error', err);
         res.status(401);
         res.end();
       } else {
-        console.log('Success', data.MessageId);
+        const diff = process.hrtime(t);
+        console.log(`Success add message to supply queue, msgID: ${data.MessageId} SQS time: ${diff[1] / 1000000} ms`);
         res.status(200);
         res.end();
       }
     });
   },
   addView: (req, res) => {
-    const { rider_id, time_stamp, is_surged, surge_ratio, surge_id } = req.body;
+    const {
+      rider_id,
+      time_stamp,
+      is_surged,
+      surge_ratio,
+      surge_id
+    } = req.body;
     const paramsView = {
       MessageDeduplicationId: time_stamp,
       MessageGroupId: time_stamp,
@@ -42,37 +50,27 @@ module.exports = {
       }),
       QueueUrl: `${process.env.sqs}views.fifo`,
     };
-    const paramsDemand = {
-      MessageDeduplicationId: time_stamp,
-      MessageGroupId: rider_id,
-      MessageBody: JSON.stringify({ rider_id, time_stamp }),
-      QueueUrl: `${process.env.sqs}addDemand.fifo`,
-    };
+    const t = process.hrtime();
     sqs.sendMessage(paramsView, (err, data) => {
       if (err) {
         console.log('Error', err);
         res.status(401);
         res.end();
       } else {
-        console.log('Success', data.MessageId);
-        res.status(200);
-        res.end();
-      }
-    });
-    sqs.sendMessage(paramsDemand, (err, data) => {
-      if (err) {
-        console.log('Error', err);
-        res.status(401);
-        res.end();
-      } else {
-        console.log('Success', data.MessageId);
+        const diff = process.hrtime(t);
+        console.log(`Success add message to views queue, msgID: ${data.MessageId} SQS time: ${diff[1] / 1000000} ms`);
         res.status(200);
         res.end();
       }
     });
   },
   addRequest: (req, res) => {
-    const { request_id, time_stamp, is_surged, surge_ratio } = req.body;
+    const {
+      request_id,
+      time_stamp,
+      is_surged,
+      surge_ratio
+    } = req.body;
     const params = {
       MessageDeduplicationId: request_id,
       MessageGroupId: time_stamp,
@@ -84,13 +82,15 @@ module.exports = {
       }),
       QueueUrl: `${process.env.sqs}requests.fifo`,
     };
+    const t = process.hrtime();
     sqs.sendMessage(params, (err, data) => {
       if (err) {
         console.log('Error', err);
         res.status(401);
         res.end();
       } else {
-        console.log('Success', data.MessageId);
+        const diff = process.hrtime(t);
+        console.log(`Success add message to requests queue, msgID: ${data.MessageId} SQS time: ${diff[1] / 1000000} ms`);
         res.status(200);
         res.end();
       }

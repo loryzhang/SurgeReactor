@@ -1,20 +1,18 @@
 const router = require('express').Router();
-const redis = require('../redis');
+// const redis = require('../redis');
 const SQS = require('../SQS');
+const endPointQuery = require('../postgresql/endpointQuery.js');
 const dbTest = require('../postgresql/testingQueries');
 
 router.get('/', (req, res) => {
-  res.render('index', { message1: 'Hey', message2: 'Hello there!' });
+  res.send('hello world!');
 });
 router.post('/driver/enqueue', SQS.addSupply);
-router.post('/prices', SQS.addview);
-router.post('/requests', SQS.addrequest);
-router.get('/supplydemandlogs/:time', redis.getSDlogs);
-router.get('/viewtorequestlogs/:time', redis.getVRlogs);
-router.post('/addtoredis', redis.adduser);
+router.post('/prices', SQS.addView);
+router.post('/requests', SQS.addRequest);
+router.get('/supplydemandlogs/:time', endPointQuery.getSDlogs);
+router.get('/viewtorequestlogs/:time', endPointQuery.getVRlogs);
+// router.post('/addtoredis', redis.adduser);
 router.get('/fake', dbTest.insertData);
-router.get('/testquery', dbTest.queryData);
-router.get('/addsupply', dbTest.addSupplyData);
-router.get('/reducesupply', dbTest.reduceSupplyData);
 
 module.exports = router;
