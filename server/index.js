@@ -6,7 +6,7 @@ const pug = require('pug');
 // const methodOverride = require('method-override');
 const morgan = require('morgan');
 const router = require('./router.js');
-const consumer = require('../SQS/consumer.js');
+// const consumer = require('../SQS/consumer.js');
 const backgroundWork = require('../backgroundWorker');
 const cron = require('cron');
 

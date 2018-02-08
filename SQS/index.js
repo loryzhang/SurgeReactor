@@ -17,14 +17,16 @@ module.exports = {
       MessageBody: JSON.stringify({ driver_id, time_stamp }),
       QueueUrl: `${process.env.sqs}addSupply.fifo`,
     };
-    const t = process.hrtime();
+    // const t = process.hrtime();
     sqs.sendMessage(params, (err, data) => {
       if (err) {
+        // console.log (err)
         res.status(401).send(`Error send message to supply SQS, ${err}`);
       } else {
-        const diff = process.hrtime(t);
-        console.log('hi:', diff[1]/1000000);
-        res.status(200).send(`Success add message to supply queue, msgID: ${data.MessageId} SQS time: ${diff[1] / 1000000} ms`);
+        // const diff = process.hrtime(t);
+        // console.log('hi:', diff[1]/1000000);
+        // res.status(200).send(`Success add message to supply queue, msgID: ${data.MessageId} SQS time: ${diff[1] / 1000000} ms`);
+        res.status(200).send('success');
       }
     });
   },
