@@ -3,7 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const pug = require('pug');
-const methodOverride = require('method-override');
+// const methodOverride = require('method-override');
 const morgan = require('morgan');
 const router = require('./router.js');
 const consumer = require('../SQS/consumer.js');
@@ -28,7 +28,7 @@ app.set('views', path.join(__dirname, '../views'));
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(methodOverride('_method'));
+// app.use(methodOverride('_method'));
 app.use(router);
 
 app.listen(port, () => {

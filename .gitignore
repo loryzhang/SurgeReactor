@@ -1,4 +1,7 @@
 node_modules
+requestsMock.csv
+viewsMock.csv
+supplyMock.csv
 requests.csv
 views.csv
 supply.csv

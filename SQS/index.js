@@ -20,14 +20,11 @@ module.exports = {
     const t = process.hrtime();
     sqs.sendMessage(params, (err, data) => {
       if (err) {
-        console.log('Error', err);
-        res.status(401);
-        res.end();
+        res.status(401).send(`Error send message to supply SQS, ${err}`);
       } else {
         const diff = process.hrtime(t);
-        console.log(`Success add message to supply queue, msgID: ${data.MessageId} SQS time: ${diff[1] / 1000000} ms`);
-        res.status(200);
-        res.end();
+        console.log('hi:', diff[1]/1000000);
+        res.status(200).send(`Success add message to supply queue, msgID: ${data.MessageId} SQS time: ${diff[1] / 1000000} ms`);
       }
     });
   },
@@ -53,14 +50,11 @@ module.exports = {
     const t = process.hrtime();
     sqs.sendMessage(paramsView, (err, data) => {
       if (err) {
-        console.log('Error', err);
-        res.status(401);
-        res.end();
+        res.status(401).send(`Error send message to views SQS, ${err}`);
       } else {
         const diff = process.hrtime(t);
-        console.log(`Success add message to views queue, msgID: ${data.MessageId} SQS time: ${diff[1] / 1000000} ms`);
-        res.status(200);
-        res.end();
+        console.log('hi:', diff[1]/1000000);
+        res.status(200).send(`Success add message to views queue, msgID: ${data.MessageId} SQS time: ${diff[1] / 1000000} ms`);
       }
     });
   },
@@ -85,14 +79,11 @@ module.exports = {
     const t = process.hrtime();
     sqs.sendMessage(params, (err, data) => {
       if (err) {
-        console.log('Error', err);
-        res.status(401);
-        res.end();
+        res.status(401).send(`Error send message to requests SQS, ${err}`);
       } else {
         const diff = process.hrtime(t);
-        console.log(`Success add message to requests queue, msgID: ${data.MessageId} SQS time: ${diff[1] / 1000000} ms`);
-        res.status(200);
-        res.end();
+        console.log('hi:', diff[1]/1000000);
+        res.status(200).send(`Success add message to requests queue, msgID: ${data.MessageId} SQS time: ${diff[1] / 1000000} ms`);
       }
     });
   },

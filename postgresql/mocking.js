@@ -8,7 +8,7 @@ const mockOneKData = () => {
     requests: [],
   };
 
-  for (let i = 0; i < 2; i += 1) {
+  for (let i = 0; i < 1; i += 1) {
     const requestid = faker.random.uuid();
     const driverid = faker.random.uuid();
     const surgeid = faker.random.uuid();
