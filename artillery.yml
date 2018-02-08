@@ -1,0 +1,35 @@
+config:
+  target: "http://localhost:8080"
+  phases:
+    - duration: 1000
+      arrivalRate: 1
+      name: 'warm up'
+    - duration: 450
+      arrivalRate: 20
+    - duration: 100
+      arrivalRate: 10
+      rampTo: 500
+  http:
+      timeout: 10
+  payload:
+    path: "supplyMock.csv"
+    fields: 
+      - "driver_id"
+      - "time_stamp"
+    # order: "sequence" # if remove this, random by default
+  environments:
+    production:
+      target: "http://YOUR_PRODUCTION_SERVER_IP:PORT"
+    staging:
+      target: "http://YOUR_STAGING_SERVER_IP:PORT"
+    debug:
+      target: "http://YOUR_DEV_SERVER_IP:PORT"
+ 
+scenarios:
+  - flow:
+    - post:
+        url: "/driver/enqueue"
+        json:
+          driver_id: "{{driver_id}}"
+          time_stamp: "{{time_stamp}}"
+        DISABLE_ENCRIPT: 1
