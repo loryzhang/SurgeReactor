@@ -3,12 +3,12 @@ const pg = require('pg');
 const { Pool } = pg;
 
 const pool = new Pool({
-  database: 'surgereactor',
+  database: 'logger',
   user: 'surgereactor',
-  password: 'surgereactor',
-  // port: 5432,
-  // host: 'localhost',
-  // ssl: true,
+  password: 'surge',
+  port: 5432,
+  host: 'ec2-54-200-168-147.us-west-2.compute.amazonaws.com',
+  ssl: true,
   max: 100,
   min: 4,
   idleTimeoutMillis: 1000,

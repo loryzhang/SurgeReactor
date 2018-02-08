@@ -1,5 +1,5 @@
 config:
-  target: "http://localhost:8080"
+  target: "http://ec2-34-211-206-151.us-west-2.compute.amazonaws.com:8080"
   phases:
     - duration: 1000
       arrivalRate: 1
@@ -21,8 +21,24 @@ config:
     production:
       target: "http://YOUR_PRODUCTION_SERVER_IP:PORT"
     staging:
-      target: "http://YOUR_STAGING_SERVER_IP:PORT"
-    debug:
+      target: "http://ec2-34-211-206-151.us-west-2.compute.amazonaws.com:8080"
+      phases:
+    - duration: 1000
+      arrivalRate: 1
+      name: 'warm up'
+    # - duration: 450
+    #   arrivalRate: 20
+    # - duration: 100
+    #   arrivalRate: 10
+    #   rampTo: 500
+  http:
+      timeout: 10
+  payload:
+    path: "supplyMock.csv"
+    fields:  
+      - "time_stamp"
+      - "driver_id" 
+   debug:
       target: "http://YOUR_DEV_SERVER_IP:PORT"
  
 scenarios:
