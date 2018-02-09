@@ -6,7 +6,7 @@ const writeResults = (query) => {
       client.query(query)
         .then(() => {
           client.release();
-          console.log ('success write logs realising');
+          console.log ('success write logs');
         })
         .catch(e => console.log('failed to wirte logs: ', e));
     })

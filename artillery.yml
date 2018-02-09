@@ -1,21 +1,21 @@
 config:
-  target: "http://localhost:8080"
+  target: "http://ec2-54-200-168-147.us-west-2.compute.amazonaws.com:8080"
   phases:
-    - duration: 1000
-      arrivalRate: 1
-      name: 'warm up'
-    - duration: 450
+    # - duration: 60
+    #   arrivalRate: 250
+    #   name: 'warm up'
+    - duration: 45
       arrivalRate: 20
-    - duration: 100
-      arrivalRate: 10
-      rampTo: 500
+    # - duration: 100
+    #   arrivalRate: 10
+    #   rampTo: 500
   http:
       timeout: 10
   payload:
     path: "supplyMock.csv"
-    fields: 
-      - "driver_id"
+    fields:  
       - "time_stamp"
+      - "driver_id"
     # order: "sequence" # if remove this, random by default
   environments:
     production:
@@ -30,6 +30,6 @@ scenarios:
     - post:
         url: "/driver/enqueue"
         json:
-          driver_id: "{{driver_id}}"
           time_stamp: "{{time_stamp}}"
+          driver_id: "{{driver_id}}"
         DISABLE_ENCRIPT: 1

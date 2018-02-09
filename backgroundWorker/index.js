@@ -16,7 +16,7 @@ module.exports = () => {
   finish.setMinutes(0);
   finish.setMilliseconds(0);
 
-  while (end < finish) {
+  while (end <= finish) {
     dbQueries.getCounts(start, end);
     end.setMinutes(end.getMinutes() + 15);
     start.setMinutes(start.getMinutes() + 15);
