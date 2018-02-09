@@ -3,7 +3,7 @@ const db = require('../postgresql');
 const writeResults = (query) => {
   return db.connect()
     .then((client) => {
-      client.query(query)
+       client.query(query)
         .then(() => {
           client.release();
           console.log ('success write logs realising');
@@ -15,13 +15,14 @@ const writeResults = (query) => {
 
 module.exports = {
   getCounts: (start, end) => {
+    console.log ('start: ', start);
     const query = `select * from supply where time_stamp between '${start.toISOString()}' and '${end.toISOString()}';select * from views where time_stamp between '${start.toISOString()}' and '${end.toISOString()}';select * from requests where time_stamp between '${start.toISOString()}' and '${end.toISOString()}';`;
     db.connect()
       .then((client) => {
         client.query(query)
           .then((results) => {
             client.release();
-            console.log('success read from supply, views and requests tables');
+            console.log('success read from supply, views and requests tables', query);
             const supply = results[0].rowCount;
             const viewCounts = results[1].rowCount;
             const requestCounts = results[2].rowCount;
