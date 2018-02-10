@@ -81,10 +81,7 @@ describe('should have five working endpoints', () => {
   describe('post -/driver/enqueue', () => {
     const incomingMsg = {
       driver_id: faker.random.uuid(),
-      time_stamp: faker.date.between('2018-02-05', '2018-02-06'),
-    };
-    const checkIfMessageExitInQueue = (messageId) => {
-      return true;
+      time_stamp: faker.date.between('2018-02-06', '2018-02-07'),
     };
 
     it('should send 401 for error', (done) => {
@@ -97,37 +94,53 @@ describe('should have five working endpoints', () => {
           done();
         });
     });
-    it('should send 200 and send message to SQS supply queue', (done) => {
+    xit('should send 200 and send message to SQS supply queue', (done) => {
       chai.request(app)
         .post('/driver/enqueue')
         .send(incomingMsg)
         .end((err, res) => {
           if (!err) {
-            expect(res.statusCode).to.equal(200);
             const { messageId } = res.body;
-            const inSupplyQueue = checkIfMessageExitInQueue(messageId);
-            inSupplyQueue.should.equal(true);
+            const params = {
+              QueueUrl: `${process.env.sqs}addSupply.fifo`,
+              MaxNumberOfMessages: 10,
+              VisibilityTimeout: 0,
+              WaitTimeSeconds: 0,
+            };
+            aws.receiveMessage(params, (e, data) => {
+              if (e) {
+                throw e;
+              } else {
+                data.Messages.pop().MessageId.should.equal(messageId);
+              }
+            });
+            expect(res.statusCode).to.equal(200);
           }
           done();
         });
     });
 
-    describe('should have worker setting up to poll messages', () => {
-      it('should poll message from the queue and add to database', () => {
-        db.connect()
-          .then(client =>
-            client.query(`select * from supply where time_stamp = '${incomingMsg.time_stamp}' and driver_id = '${incomingMsg.driver_id}'`)
-              .then(result => result.rowCount.should.equal(1))
-              .catch(e => console.log(e)));
-      });
-      it('should delete message if successfully write to database', () => {
-        const inSupplyQueue = checkIfMessageExitInQueue();
-        inSupplyQueue.should.equal(false);
-      });
-      it('should NOT delete message if failed to write to database', () => {
-        const inSupplyQueue = checkIfMessageExitInQueue();
-        inSupplyQueue.should.equal(true);
-      });
+    it('should poll message from the queue and add to database', () => {
+      const query = `select * from supply where time_stamp = '${incomingMsg.time_stamp.toISOString()}' and driver_id = '${incomingMsg.driver_id}'`;
+      chai.request(app)
+        .post('/prices')
+        .send(incomingMsg)
+        .end((err, res) => {
+          if (!err) {
+            db.connect()
+              .then(client =>
+                client.query(query)
+                  .then((result) => {
+                    client.release();
+                    result.rowCount.should.equal(1);
+                  })
+                  .catch((e) => {
+                    client.release();
+                    console.log(e);
+                  }));
+            expect(res.statusCode).to.equal(200);
+          }
+        });
     });
   });
 
@@ -137,9 +150,6 @@ describe('should have five working endpoints', () => {
       time_stamp: faker.date.between('2018-02-05', '2018-02-06'),
       is_surged: faker.random.boolean(),
       surge_ratio: faker.random.number(9),
-    };
-    const checkIfMessageExitInQueue = (messageId) => {
-      return true;
     };
 
     it('should send 401 when error', (done) => {
@@ -152,18 +162,52 @@ describe('should have five working endpoints', () => {
           done();
         });
     });
-    it('should send 200 when succeed', (done) => {
+    xit('should send 200 and send message to SQS views queue', (done) => {
       chai.request(app)
         .post('/prices')
         .send(incomingMsg)
         .end((err, res) => {
           if (!err) {
             const { messageId } = res.body;
-            const inViewsQueue = checkIfMessageExitInQueue(messageId);
-            inViewsQueue.should.equal(true);
+            const params = {
+              QueueUrl: `${process.env.sqs}views.fifo`,
+              MaxNumberOfMessages: 10,
+              VisibilityTimeout: 0,
+              WaitTimeSeconds: 0,
+            };
+            aws.receiveMessage(params, (e, data) => {
+              if (e) {
+                throw e;
+              } else {
+                data.Messages.pop().MessageId.should.equal(messageId);
+              }
+            });
             expect(res.statusCode).to.equal(200);
           }
           done();
+        });
+    });
+
+    it('should poll message from the queue and add to database', () => {
+      const query = `select * from views where time_stamp = '${incomingMsg.time_stamp.toISOString()}' and surge_id = '${incomingMsg.surge_id}'`;
+      console.log(query);
+      chai.request(app)
+        .post('/prices')
+        .send(incomingMsg)
+        .end((err, res) => {
+          if (!err) {
+            db.connect()
+              .then(client =>
+                client.query(query)
+                  .then((result) => {
+                    client.release();
+                    result.rowCount.should.equal(1);
+                  })
+                  .catch((e) => {
+                    console.log(e);
+                  }));
+            expect(res.statusCode).to.equal(200);
+          }
         });
     });
   });
@@ -175,9 +219,6 @@ describe('should have five working endpoints', () => {
       is_surged: faker.random.boolean(),
       surge_ratio: faker.random.number(9),
     };
-    const checkIfMessageExitInQueue = (messageId) => {
-      return true;
-    };
 
     it('should send 401 when error', (done) => {
       chai.request(app)
@@ -189,37 +230,71 @@ describe('should have five working endpoints', () => {
           done();
         });
     });
-    it('should send 200 when succeed', (done) => {
+    xit('should send 200 and send message to SQS requests queue', (done) => {
       chai.request(app)
         .post('/requests')
         .send(incomingMsg)
         .end((err, res) => {
           if (!err) {
             const { messageId } = res.body;
-            const inRequestQueue = checkIfMessageExitInQueue(messageId);
-            inRequestQueue.should.equal(true);
+            const params = {
+              QueueUrl: `${process.env.sqs}requests.fifo`,
+              MaxNumberOfMessages: 10,
+              VisibilityTimeout: 0,
+              WaitTimeSeconds: 0,
+            };
+            aws.receiveMessage(params, (e, data) => {
+              if (e) {
+                throw e;
+              } else {
+                data.Messages.pop().MessageID.should.equal(messageId);
+              }
+            });
             expect(res.statusCode).to.equal(200);
           }
           done();
         });
     });
+
+    it('should poll message from the queue and add to database', () => {
+      const query = `select * from requests where time_stamp = '${incomingMsg.time_stamp.toISOString()}' and request_id = '${incomingMsg.request_id}'`;
+      chai.request(app)
+        .post('/prices')
+        .send(incomingMsg)
+        .end((err, res) => {
+          if (!err) {
+            db.connect()
+              .then(client =>
+                client.query(query)
+                  .then((result) => {
+                    client.release();
+                    result.rowCount.should.equal(1);
+                  })
+                  .catch((e) => {
+                    client.release();
+                    console.log(e);
+                  }));
+            expect(res.statusCode).to.equal(200);
+          }
+        });
+    });
   });
 });
 
-describe('should have worker to generate reports', () => {
-  it('should only work everyday after 3am', () => {
+// describe('should have worker to generate reports', () => {
+//   it('should only work everyday after 3am', () => {
 
-  });
-  it('should read all the data from 6am- 12pm of the previous day', () => {
+//   });
+//   it('should read all the data from 6am- 12pm of the previous day', () => {
 
-  });
-  it('should calulate all supply counts, views counts and requests counts for every 15 mins', () => {
+//   });
+//   it('should calulate all supply counts, views counts and requests counts for every 15 mins', () => {
 
-  });
-  it('should write result to database', () => {
-    db.connect()
-      .then(client => client.query()
-        .then(result => result.rowCount.should.equal(1))
-        .catch(e => console.log (e)));
-  });
-});
+//   });
+//   it('should write result to database', () => {
+//     db.connect()
+//       .then(client => client.query()
+//         .then(result => result.rowCount.should.equal(1))
+//         .catch(e => console.log (e)));
+//   });
+// });
