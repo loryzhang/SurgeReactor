@@ -1,6 +1,7 @@
-const dbQueries = require('./backgroundWorkQueries');
+const dbQueries = require('../postgresql/queries.js');
+const cron = require('cron');
 
-module.exports = () => {
+const worker = () => {
   const start = new Date();
   start.setDate(start.getDate() - 1);
   start.setUTCHours(6);
@@ -16,10 +17,19 @@ module.exports = () => {
   finish.setMinutes(0);
   finish.setMilliseconds(0);
 
-  while (end < finish) {
+  while (end <= finish) {
     dbQueries.getCounts(start, end);
     end.setMinutes(end.getMinutes() + 15);
     start.setMinutes(start.getMinutes() + 15);
   }
   return true;
 };
+
+const job = new cron.CronJob({
+  cronTime: '00 00 03 * *',
+  onTick: worker,
+  start: false,
+  timeZone: 'America/Los_Angeles',
+});
+
+module.exports = job;
