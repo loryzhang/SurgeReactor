@@ -1,8 +1,7 @@
 const db = require('../postgresql');
 
 module.exports = (req, res) => {
-  const { driver_id, time_stamp } = req.body;
-  const query = `insert into supply (driver_id, time_stamp) values ('${driver_id}', '${time_stamp}')`;
+  const query = `insert into supply (driver_id, time_stamp) values ('${req.body.driver_id}', '${req.body.time_stamp}')`;
   db.connect()
     .then((client) => {
       client.query(query)

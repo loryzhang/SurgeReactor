@@ -1,15 +1,15 @@
 const newRelic = require('newrelic');
+const consumer = require('../aws/consumer.js');
 const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const router = require('./router.js');
-const consumer = require('../SQS/consumer.js');
-const backgroundWork = require('../backgroundWorker');
+const worker = require('./worker.js');
 const cron = require('cron');
 
 const job = new cron.CronJob({
   cronTime: '00 00 03 * *',
-  onTick: backgroundWork,
+  onTick: worker,
   start: false,
   timeZone: 'America/Los_Angeles',
 });

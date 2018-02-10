@@ -1,14 +1,13 @@
 const router = require('express').Router();
-const SQS = require('../SQS');
-const endPointQuery = require('../postgresql/endpointQuery.js');
+const controller = require('../controller');
 
 router.get('/', (req, res) => {
   res.send('hello world!');
 });
-router.post('/driver/enqueue', SQS.addSupply);
-router.post('/prices', SQS.addView);
-router.post('/requests', SQS.addRequest);
-router.get('/supplydemandlogs/:time', endPointQuery.getSDlogs);
-router.get('/viewtorequestlogs/:time', endPointQuery.getVRlogs);
+router.post('/driver/enqueue', controller.addSupply);
+router.post('/prices', controller.addView);
+router.post('/requests', controller.addRequest);
+router.get('/supplydemandlogs/:time', controller.getSDlogs);
+router.get('/viewtorequestlogs/:time', controller.getVRlogs);
 
 module.exports = router;

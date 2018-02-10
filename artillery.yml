@@ -1,11 +1,12 @@
 config:
-  target: "http://ec2-54-200-168-147.us-west-2.compute.amazonaws.com:8080"
+  # target: "http://ec2-54-200-168-147.us-west-2.compute.amazonaws.com:8080"
+  target: "http://localhost:8080"
   phases:
-    # - duration: 60
-    #   arrivalRate: 250
-    #   name: 'warm up'
-    - duration: 45
-      arrivalRate: 20
+    - duration: 60
+      arrivalRate: 250
+      name: 'warm up'
+    # - duration: 45
+    #   arrivalRate: 20
     # - duration: 100
     #   arrivalRate: 10
     #   rampTo: 500

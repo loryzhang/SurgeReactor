@@ -4,6 +4,7 @@ const faker = require('faker');
 const chaiHttp = require('chai-http');
 const db = require('../postgresql');
 const app = require('../server/index.js');
+const aws = require('../aws');
 
 const { expect } = chai;
 const should = chai.should();
@@ -29,22 +30,17 @@ describe('should have five working endpoints', () => {
           done();
         });
     });
-    describe('for successful request', () => {
-      it('should send 200 and data', (done) => {
-        chai.request(app)
-          .get('/supplydemandlogs/2018-02-04 23:00:00')
-          .end((err, res) => {
-            res.should.have.status(200);
-            res.body.should.be.a('object');
-            res.body.should.have.property('time_stamp');
-            res.body.should.have.property('supply');
-            res.body.should.have.property('demand');
-            done();
-          });
-      });
-      it('should query sdlogs table and get 1 row of result', () => {
-
-      });
+    it('should send 200 and data on success', (done) => {
+      chai.request(app)
+        .get('/supplydemandlogs/2018-02-04 23:00:00')
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.should.have.property('time_stamp');
+          res.body.should.have.property('supply');
+          res.body.should.have.property('demand');
+          done();
+        });
     });
   });
 
@@ -67,27 +63,30 @@ describe('should have five working endpoints', () => {
           done();
         });
     });
-    describe('for successful request', () => {
-      it('should send 200 and data', (done) => {
-        chai.request(app)
-          .get('/viewtorequestlogs/2018-02-04 23:00:00')
-          .end((err, res) => {
-            res.should.have.status(200);
-            res.body.should.be.a('object');
-            res.body.should.have.property('time_stamp');
-            res.body.should.have.property('totalViews');
-            res.body.should.have.property('totalRequests');
-            res.body.should.have.property('averageSurge');
-            done();
-          });
-      });
-      it('should query vrlogs table and get 4 rows of results', () => {
-
-      });
+    it('should send 200 and data on success', (done) => {
+      chai.request(app)
+        .get('/viewtorequestlogs/2018-02-04 23:00:00')
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.should.have.property('time_stamp');
+          res.body.should.have.property('totalViews');
+          res.body.should.have.property('totalRequests');
+          res.body.should.have.property('averageSurge');
+          done();
+        });
     });
   });
 
   describe('post -/driver/enqueue', () => {
+    const incomingMsg = {
+      driver_id: faker.random.uuid(),
+      time_stamp: faker.date.between('2018-02-05', '2018-02-06'),
+    };
+    const checkIfMessageExitInQueue = (messageId) => {
+      return true;
+    };
+
     it('should send 401 for error', (done) => {
       chai.request(app)
         .post('/driver/enqueue')
@@ -98,29 +97,45 @@ describe('should have five working endpoints', () => {
           done();
         });
     });
-    it('should send 200 when succeed', (done) => {
+    it('should send 200 and send message to SQS supply queue', (done) => {
       chai.request(app)
         .post('/driver/enqueue')
-        .send({
-          driver_id: faker.random.uuid(),
-          time_stamp: faker.date.between('2018-02-05', '2018-02-06'),
-        })
+        .send(incomingMsg)
         .end((err, res) => {
           if (!err) {
             expect(res.statusCode).to.equal(200);
+            const { messageId } = res.body;
+            const a = checkIfMessageExitInQueue(messageId);
+            a.should.equal(true);
           }
           done();
         });
     });
-    it ('should send message to SQS supply queue', () => {
 
-    });
-    it ('should resend HTTPrequest if failed to add message to the queue', () => {
-
+    describe('should have worker setting up to poll messages', () => {
+      it('should poll message from the queue and add to database', (done) => {
+    
+      });
+      it('should delete message if successfully write to database', (done) => {
+    
+      });
+      it('should NOT delete message if failed to write to database', (done) => {
+    
+      });
     });
   });
 
   describe('post -/prices', () => {
+    const incomingMsg = {
+      surge_id: faker.random.uuid(),
+      time_stamp: faker.date.between('2018-02-05', '2018-02-06'),
+      is_surged: faker.random.boolean(),
+      surge_ratio: faker.random.number(9),
+    };
+    const checkIfMessageExitInQueue = (messageId) => {
+      return true;
+    };
+
     it('should send 401 when error', (done) => {
       chai.request(app)
         .post('/prices')
@@ -134,28 +149,30 @@ describe('should have five working endpoints', () => {
     it('should send 200 when succeed', (done) => {
       chai.request(app)
         .post('/prices')
-        .send({
-          surge_id: faker.random.uuid(),
-          time_stamp: faker.date.between('2018-02-05', '2018-02-06'),
-          is_surged: faker.random.boolean(),
-          surge_ratio: faker.random.number(9),
-        })
+        .send(incomingMsg)
         .end((err, res) => {
           if (!err) {
+            const { messageId } = res.body;
+            const inViewsQueue = checkIfMessageExitInQueue(messageId);
+            inViewsQueue.should.equal(true);
             expect(res.statusCode).to.equal(200);
           }
           done();
         });
-    });
-    it('should send messaage to SQS views queue', () => {
-
-    });
-    it('should resend HTTPrequest if failed to add message to SQS', () => {
-
     });
   });
 
   describe('post -/requests', () => {
+    const incomingMsg = {
+      request_id: faker.random.uuid(),
+      time_stamp: faker.date.between('2018-02-05', '2018-02-06'),
+      is_surged: faker.random.boolean(),
+      surge_ratio: faker.random.number(9),
+    };
+    const checkIfMessageExitInQueue = (messageId) => {
+      return true;
+    };
+
     it('should send 401 when error', (done) => {
       chai.request(app)
         .post('/requests')
@@ -169,38 +186,18 @@ describe('should have five working endpoints', () => {
     it('should send 200 when succeed', (done) => {
       chai.request(app)
         .post('/requests')
-        .send({
-          request_id: faker.random.uuid(),
-          time_stamp: faker.date.between('2018-02-05', '2018-02-06'),
-          is_surged: faker.random.boolean(),
-          surge_ratio: faker.random.number(9),
-        })
+        .send(incomingMsg)
         .end((err, res) => {
           if (!err) {
+            const { messageId } = res.body;
+            const inRequestQueue = checkIfMessageExitInQueue(messageId);
+            inRequestQueue.should.equal(true);
             expect(res.statusCode).to.equal(200);
           }
           done();
         });
     });
-  });
-  it('should send message to SQS requests queue', () => {
-
-  });
-  it('should resend HTTPrequest if failed to add message to the SQS', () => {
-
-  });
-});
-
-describe('should have worker setting up to poll messages', () => {
-  it('should poll message from the queue and add to database', () => {
-
-  });
-  it('should delete message if successfully write to database', () => {
-
-  });
-  it('should NOT delete message if failed to write to database', () => {
-
-  });
+  }); 
 });
 
 describe('should have worker to generate reports', () => {

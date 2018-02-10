@@ -1,4 +1,4 @@
-const dbQueries = require('./backgroundWorkQueries');
+const dbQueries = require('../postgresql/queries.js');
 
 module.exports = () => {
   const start = new Date();
