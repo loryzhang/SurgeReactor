@@ -25,11 +25,13 @@ module.exports = {
         }));
   },
   insertView: (msgs, done) => {
+    console.log (msgs);
     const data = `insert into views (surge_id, time_stamp, is_surged, surge_ratio) values ('${msgs.surge_id}', '${msgs.time_stamp}', '${msgs.is_surged}', '${msgs.surge_ratio}');`;
     db.connect()
       .then(client => client.query(data)
         .then(() => {
           client.release();
+          console.log ('view polled');
           return done();
         })
         .catch((e) => {
@@ -43,6 +45,7 @@ module.exports = {
       .then(client => client.query(data)
         .then(() => {
           client.release();
+          console.log ('view polled');
           return done();
         })
         .catch((e) => {
