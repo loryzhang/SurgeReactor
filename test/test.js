@@ -105,22 +105,28 @@ describe('should have five working endpoints', () => {
           if (!err) {
             expect(res.statusCode).to.equal(200);
             const { messageId } = res.body;
-            const a = checkIfMessageExitInQueue(messageId);
-            a.should.equal(true);
+            const inSupplyQueue = checkIfMessageExitInQueue(messageId);
+            inSupplyQueue.should.equal(true);
           }
           done();
         });
     });
 
     describe('should have worker setting up to poll messages', () => {
-      it('should poll message from the queue and add to database', (done) => {
-    
+      it('should poll message from the queue and add to database', () => {
+        db.connect()
+          .then(client =>
+            client.query(`select * from supply where time_stamp = '${incomingMsg.time_stamp}' and driver_id = '${incomingMsg.driver_id}'`)
+              .then(result => result.rowCount.should.equal(1))
+              .catch(e => console.log(e)));
       });
-      it('should delete message if successfully write to database', (done) => {
-    
+      it('should delete message if successfully write to database', () => {
+        const inSupplyQueue = checkIfMessageExitInQueue();
+        inSupplyQueue.should.equal(false);
       });
-      it('should NOT delete message if failed to write to database', (done) => {
-    
+      it('should NOT delete message if failed to write to database', () => {
+        const inSupplyQueue = checkIfMessageExitInQueue();
+        inSupplyQueue.should.equal(true);
       });
     });
   });
@@ -197,7 +203,7 @@ describe('should have five working endpoints', () => {
           done();
         });
     });
-  }); 
+  });
 });
 
 describe('should have worker to generate reports', () => {
@@ -211,6 +217,9 @@ describe('should have worker to generate reports', () => {
 
   });
   it('should write result to database', () => {
-
+    db.connect()
+      .then(client => client.query()
+        .then(result => result.rowCount.should.equal(1))
+        .catch(e => console.log (e)));
   });
 });

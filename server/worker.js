@@ -1,6 +1,7 @@
 const dbQueries = require('../postgresql/queries.js');
+const cron = require('cron');
 
-module.exports = () => {
+const worker = () => {
   const start = new Date();
   start.setDate(start.getDate() - 1);
   start.setUTCHours(6);
@@ -23,3 +24,12 @@ module.exports = () => {
   }
   return true;
 };
+
+const job = new cron.CronJob({
+  cronTime: '00 00 03 * *',
+  onTick: worker,
+  start: false,
+  timeZone: 'America/Los_Angeles',
+});
+
+module.exports = job;
