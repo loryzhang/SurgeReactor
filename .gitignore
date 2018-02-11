@@ -6,3 +6,9 @@ requests.csv
 views.csv
 supply.csv
 newrelic_agent.log
+artillery.yml
+.dockerignore
+Dockerfile
+views
+coverage
+test
