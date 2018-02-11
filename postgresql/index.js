@@ -25,4 +25,15 @@ const pool = new Pool({
 // });
 
 
+//const pool = new Pool({
+  //database: 'surgereactor',
+  //user: 'surgereactor',
+  //password: 'surgereactor',
+  //max: 100,
+  //min: 4,
+  //idleTimeoutMillis: 1000,
+  //connectionTimeoutMillis: 1000,
+//});
+
+
 module.exports = pool;
