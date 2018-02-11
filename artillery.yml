@@ -1,9 +1,9 @@
 config:
-  # target: "http://ec2-54-200-168-147.us-west-2.compute.amazonaws.com:8080"
-  target: "http://localhost:8080"
+  target: "http://ec2-34-216-86-181.us-west-2.compute.amazonaws.com:8080"
+  # target: "http://localhost:8080"
   phases:
-    - duration: 10
-      arrivalRate: 1
+    - duration: 60
+      arrivalRate: 250
       name: 'warm up'
     # - duration: 45
     #   arrivalRate: 20
@@ -13,22 +13,22 @@ config:
   http:
       timeout: 10
   payload:
-    # path: "supplyMock.csv"
-    # fields:  
-    #   - "time_stamp"
-    #   - "driver_id"
+    path: "supplyMock.csv"
+    fields:  
+      - "time_stamp"
+      - "driver_id"
     # path: "viewsMock.csv"
     # fields:  
     #   - "time_stamp" 
     #   - "surge_id"
     #   - "surge_ratio"
     #   - "is_surged"
-    path: "requestsMock.csv"
-    fields:  
-      - "time_stamp" 
-      - "request_id"
-      - "surge_ratio"
-      - "is_surged"
+    # path: "requestsMock.csv"
+    # fields:  
+    #   - "time_stamp" 
+    #   - "request_id"
+    #   - "surge_ratio"
+    #   - "is_surged"
     # order: "sequence" # if remove this, random by default
   environments:
     production:
@@ -40,12 +40,12 @@ config:
  
 scenarios:
   - flow:
-    # - post:
-    #     url: "/driver/enqueue"
-    #     json:
-    #       time_stamp: "{{time_stamp}}"
-    #       driver_id: "{{driver_id}}"
-    #     DISABLE_ENCRIPT: 1
+    - post:
+        url: "/driver/enqueue"
+        json:
+          time_stamp: "{{time_stamp}}"
+          driver_id: "{{driver_id}}"
+        DISABLE_ENCRIPT: 1
     # - post:
     #     url: "/prices"
     #     json:
@@ -54,11 +54,11 @@ scenarios:
     #       surge_ratio: "{{surge_ratio}}"
     #       is_surged: "{{is_surged}}"
     #     DISABLE_ENCRIPT: 1
-    - post:
-        url: "/requests"
-        json:
-          time_stamp: "{{time_stamp}}"
-          request_id: "{{request_id}}"
-          surge_ratio: "{{surge_ratio}}"
-          is_surged: "{{is_surged}}"
-        DISABLE_ENCRIPT: 1
+    # - post:
+    #     url: "/requests"
+    #     json:
+    #       time_stamp: "{{time_stamp}}"
+    #       request_id: "{{request_id}}"
+    #       surge_ratio: "{{surge_ratio}}"
+    #       is_surged: "{{is_surged}}"
+    #     DISABLE_ENCRIPT: 1
