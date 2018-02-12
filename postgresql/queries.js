@@ -15,6 +15,7 @@ module.exports = {
       .then(client => client.query(data)
         .then(() => {
           client.release();
+          console.log ('success');
           return done();
         })
         .catch((e) => {
