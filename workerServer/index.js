@@ -1,5 +1,15 @@
-const dbQueries = require('../postgresql/queries.js');
+const express = require('express');
 const cron = require('cron');
+const bodyParser = require('body-parser');
+const morgan = require('morgan');
+const dbQueries = require('../postgresql/queries.js');
+
+const app = express();
+const port = process.env.port || 3000;
+
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 const worker = () => {
   const start = new Date();
@@ -32,4 +42,10 @@ const job = new cron.CronJob({
   timeZone: 'America/Los_Angeles',
 });
 
-module.exports = job;
+job.start();
+
+app.listen(port, () => {
+  console.log(`cronWorker server listening to port ${port}`);
+});
+
+module.exports = app;
