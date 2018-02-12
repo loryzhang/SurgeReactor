@@ -78,7 +78,7 @@ module.exports = {
       res.status(400).send('Invalid time stamp!');
     } else {
       const end = new Date(time);
-      end.setUTCHours(end.getMinutes() + 45);
+      end.setMinutes(end.getMinutes() + 45);
       db.getVRlogs(time, end)
         .then((result) => {
           const data = JSON.parse(JSON.stringify(result.rows));

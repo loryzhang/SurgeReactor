@@ -1,6 +1,5 @@
 const chai = require('chai');
 const faker = require('faker');
-// const request = require('supertest');
 const chaiHttp = require('chai-http');
 const db = require('../postgresql');
 const app = require('../server/index.js');
@@ -32,7 +31,7 @@ describe('should have five working endpoints', () => {
     });
     it('should send 200 and data on success', (done) => {
       chai.request(app)
-        .get('/supplydemandlogs/2018-02-04 23:00:00')
+        .get('/supplydemandlogs/2018-02-04T23:00:00.000Z')
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a('object');
@@ -65,7 +64,7 @@ describe('should have five working endpoints', () => {
     });
     it('should send 200 and data on success', (done) => {
       chai.request(app)
-        .get('/viewtorequestlogs/2018-02-04 23:00:00')
+        .get('/viewtorequestlogs/2018-02-04T23:00:00.000Z')
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a('object');
@@ -147,7 +146,7 @@ describe('should have five working endpoints', () => {
   describe('post -/prices', () => {
     const incomingMsg = {
       surge_id: faker.random.uuid(),
-      time_stamp: faker.date.between('2018-02-05', '2018-02-06'),
+      time_stamp: faker.date.between('2018-02-10', '2018-02-10'),
       is_surged: faker.random.boolean(),
       surge_ratio: faker.random.number(9),
     };
