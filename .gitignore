@@ -12,3 +12,4 @@ Dockerfile
 views
 coverage
 test
+.nyc_output/
