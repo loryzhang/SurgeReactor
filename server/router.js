@@ -1,5 +1,9 @@
 const router = require('express').Router();
-const controller = require('../controller');
+const controller=require('../controller');
+
+router.get('/loaderio-221db89cd090500c274ed7c0826eda6a', (req, res) => {
+  res.send('loaderio-221db89cd090500c274ed7c0826eda6a');
+});
 
 router.get('/', (req, res) => {
   res.send('hello world!');

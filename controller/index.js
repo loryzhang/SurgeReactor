@@ -4,10 +4,10 @@ const db = require('../postgresql/queries.js');
 module.exports = {
   addSupply: (req, res) => {
     const params = {
-      MessageDeduplicationId: `${req.body.time_stamp}${req.body.driver_id}`,
-      MessageGroupId: req.body.time_stamp,
+     // MessageDeduplicationId: `${req.body.time_stamp}${req.body.driver_id}`,
+     // MessageGroupId: req.body.time_stamp,
       MessageBody: JSON.stringify(req.body),
-      QueueUrl: `${process.env.sqs}addSupply.fifo`,
+      QueueUrl: `${process.env.sqs}addSupply`,
     };
     sqs.sendMessage(params, (err, data) => {
       if (err) {
@@ -19,10 +19,10 @@ module.exports = {
   },
   addView: (req, res) => {
     const paramsView = {
-      MessageDeduplicationId: req.body.surge_id,
-      MessageGroupId: req.body.time_stamp,
+     // MessageDeduplicationId: req.body.surge_id,
+     // MessageGroupId: req.body.time_stamp,
       MessageBody: JSON.stringify(req.body),
-      QueueUrl: `${process.env.sqs}views.fifo`,
+      QueueUrl: `${process.env.sqs}views`,
     };
     sqs.sendMessage(paramsView, (err, data) => {
       if (err) {
@@ -34,10 +34,10 @@ module.exports = {
   },
   addRequest: (req, res) => {
     const params = {
-      MessageDeduplicationId: req.body.request_id,
-      MessageGroupId: req.body.time_stamp,
+      //MessageDeduplicationId: req.body.request_id,
+     // MessageGroupId: req.body.time_stamp,
       MessageBody: JSON.stringify(req.body),
-      QueueUrl: `${process.env.sqs}requests.fifo`,
+      QueueUrl: `${process.env.sqs}requests`,
     };
     sqs.sendMessage(params, (err, data) => {
       if (err) {
