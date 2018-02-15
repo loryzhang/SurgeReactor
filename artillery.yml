@@ -1,15 +1,15 @@
 config:
-  # target: "http://ec2-34-216-86-181.us-west-2.compute.amazonaws.com:8080"
+  target: 
   target: "http://localhost:8080"
   phases:
     - duration: 60
-      arrivalRate: 250
+      arrivalRate: 500
       name: 'warm up'
     # - duration: 45
     #   arrivalRate: 20
     # - duration: 100
     #   arrivalRate: 10
-    #   rampTo: 500
+    #   rampTo: 250
   http:
       timeout: 10
   payload:
@@ -32,9 +32,9 @@ config:
     # order: "sequence" # if remove this, random by default
   environments:
     production:
-      target: "http://YOUR_PRODUCTION_SERVER_IP:PORT"
+      target: "http://ec2-34-216-86-181.us-west-2.compute.amazonaws.com:8080"
     staging:
-      target: "http://YOUR_STAGING_SERVER_IP:PORT"
+      target: "http://ec2-34-216-86-181.us-west-2.compute.amazonaws.com:8080"
     debug:
       target: "http://YOUR_DEV_SERVER_IP:PORT"
  
