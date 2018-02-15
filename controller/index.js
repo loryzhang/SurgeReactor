@@ -1,51 +1,108 @@
-const sqs = require('../aws');
 const db = require('../postgresql/queries.js');
+const {
+  handleError,
+  syncToHardDisk,
+  sendTenMessages,
+  unlinkFile,
+  reSync,
+} = require('./helper.js');
+
+let addSupply = [];
+let views = [];
+let requests = [];
+
+let i = 0;
+let j = 0;
+let k = 0;
+
+handleError('addSupply', addSupply);
+handleError('views', views);
+handleError('requests', requests);
 
 module.exports = {
   addSupply: (req, res) => {
-    const params = {
-     // MessageDeduplicationId: `${req.body.time_stamp}${req.body.driver_id}`,
-     // MessageGroupId: req.body.time_stamp,
+    addSupply.push({
+      Id: i.toString(),
       MessageBody: JSON.stringify(req.body),
-      QueueUrl: `${process.env.sqs}addSupply`,
-    };
-    sqs.sendMessage(params, (err, data) => {
-      if (err) {
-        res.status(401).json({ error: `${err}` });
-      } else {
-        res.status(200).json({ messageId: `${data.MessageId}` });
-      }
     });
+    i += 1;
+    syncToHardDisk('addSupply', i, req.body);
+    if (addSupply.length === 10) {
+      sendTenMessages('addSupply', addSupply, (err, data) => {
+        if (err) {
+          res.status(401).end();
+        } else {
+          addSupply = [];
+          unlinkFile('addSupply');
+          if (data.Failed) {
+            data.Failed.forEach((message) => {
+              addSupply.push({
+                Id: message.Id,
+                MessageBody: message.Message.MessageBody,
+              });
+              reSync('addSupply', message);
+            });
+          }
+        }
+      });
+    }
+    res.status(200).end();
   },
   addView: (req, res) => {
-    const paramsView = {
-     // MessageDeduplicationId: req.body.surge_id,
-     // MessageGroupId: req.body.time_stamp,
+    views.push({
+      Id: j.toString(),
       MessageBody: JSON.stringify(req.body),
-      QueueUrl: `${process.env.sqs}views`,
-    };
-    sqs.sendMessage(paramsView, (err, data) => {
-      if (err) {
-        res.status(401).json({ error: `${err}` });
-      } else {
-        res.status(200).json({ messageId: `${data.MessageId}` });
-      }
     });
+    j += 1;
+    syncToHardDisk('views', j, req.body);
+    if (views.length === 10) {
+      sendTenMessages('views', views, (err, data) => {
+        if (err) {
+          res.status(401).end();
+        } else {
+          views = [];
+          unlinkFile('views');
+          if (data.Failed) {
+            data.Failed.forEach((message) => {
+              views.push({
+                Id: message.Id,
+                MessageBody: message.Message.MessageBody,
+              });
+              reSync('views', message);
+            });
+          }
+        }
+      });
+    }
+    res.status(200).end();
   },
   addRequest: (req, res) => {
-    const params = {
-      //MessageDeduplicationId: req.body.request_id,
-     // MessageGroupId: req.body.time_stamp,
+    requests.push({
+      Id: k.toString(),
       MessageBody: JSON.stringify(req.body),
-      QueueUrl: `${process.env.sqs}requests`,
-    };
-    sqs.sendMessage(params, (err, data) => {
-      if (err) {
-        res.status(401).json({ error: `${err}` });
-      } else {
-        res.status(200).json({ messageId: `${data.MessageId}` });
-      }
     });
+    k += 1;
+    syncToHardDisk('requests', k, req.body);
+    if (requests.length === 10) {
+      sendTenMessages('requests', requests, (err, data) => {
+        if (err) {
+          res.status(401).end();
+        } else {
+          requests = [];
+          unlinkFile('requests');
+          if (data.Failed) {
+            data.Failed.forEach((message) => {
+              requests.push({
+                Id: message.Id,
+                MessageBody: message.Message.MessageBody,
+              });
+              reSync('requests', message);
+            });
+          }
+        }
+      });
+    }
+    res.status(200).end();
   },
   getSDlogs: (req, res) => {
     const { time } = req.params;
@@ -106,3 +163,4 @@ module.exports = {
     }
   },
 };
+
