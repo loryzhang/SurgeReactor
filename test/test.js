@@ -287,7 +287,8 @@ describe('should have five working endpoints', () => {
 //   it('should read all the data from 6am- 12pm of the previous day', () => {
 
 //   });
-//   it('should calulate all supply counts, views counts and requests counts for every 15 mins', () => {
+//   it('should calulate all supply counts, views counts and requests \n
+// counts for every 15 mins', () => {
 
 //   });
 //   it('should write result to database', () => {

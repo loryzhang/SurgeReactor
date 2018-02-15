@@ -12,18 +12,18 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const addSupply = Consumer.create({
-  queueUrl: `${process.env.sqs}addSupply.fifo`,
-  region: 'us-west-2',
+  queueUrl: `${process.env.sqsStandard}addSupply`,
+  region: 'us-west-1',
   batchSize: 10,
   handleMessage: (message, done) => {
     const msgBody = JSON.parse(message.Body);
-    // db.insertSupply(msgBody, done);
-    return done();
+    db.insertSupply(msgBody, done);
+    // return done();
   },
 });
 const addView = Consumer.create({
-  queueUrl: `${process.env.sqs}views.fifo`,
-  region: 'us-west-2',
+  queueUrl: `${process.env.sqsStandard}views`,
+  region: 'us-west-1',
   batchSize: 10,
   handleMessage: (message, done) => {
     const msgBody = JSON.parse(message.Body);
@@ -31,8 +31,8 @@ const addView = Consumer.create({
   },
 });
 const addRequest = Consumer.create({
-  queueUrl: `${process.env.sqs}requests.fifo`,
-  region: 'us-west-2',
+  queueUrl: `${process.env.sqsStandard}requests`,
+  region: 'us-west-1',
   batchSize: 10,
   handleMessage: (message, done) => {
     const msgBody = JSON.parse(message.Body);
